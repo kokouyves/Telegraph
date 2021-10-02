@@ -1,4 +1,6 @@
-const express = require('express');
+const express = require('express')
+
+const lib = require('./library')
 
 const app = express();
 app.use(
@@ -10,7 +12,7 @@ app.use(
 app.use(express.json())
 
 const server = require('http').Server(app);
-const port = 4000;
+const port = 3000;
 
 app.get('/', (req, res) => {
 	res.status(200);
@@ -20,32 +22,26 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
 	res.status(200);
-	res.json({ message: " c est les vacances" });
-    
+	res.json({ message: "POST Response" });
 	res.end();
 });
 
 app.post('/crypt-message', (req, res) => {
-    const request = req.body; // get request senGETt
+    const request = req.body; // get request sent
     const message = request.message;
     const algorithm = request.algorithm;
     // Logs imofration received
     console.log("Message to process: ", message);
     console.log("Algorithm used for encryption: ", algorithm);
 
- 
+    // Request Validation
     // We can handle only 2 algorithm keys : HC2, H3X
-    request.algorithm = 'aes2896mg' ;
 
 
     // Process the request
     let message_encrypted = "";
-    for (let i = message.length - 1; i >= 0; i--) {
-        message_encrypted = message_encrypted + message.charAt(i);
-    }
-    let message_decrypted = "";
-    for (let i = message.length - 1; i>= 0; i--){
-        message_decrypted = message_decrypted + message.charAt(i);
+    for (let i = 0; i < message.length; i++) {
+        message_encrypted = message_encrypted + lib.getCode(message.charAt(i))
     }
 
     // Send response
@@ -67,3 +63,4 @@ server.listen(port, (err) => {
 
 	console.log('Server running on localhost: ', port);
 });
+
